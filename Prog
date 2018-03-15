@@ -1,0 +1,333 @@
+//Anant Garg
+
+
+#include <iostream>
+using namespace std;
+int ssm, noi,nos,nod, dir;
+int reach; int t; int count;
+struct Item
+{
+	string name1;
+	string name2;
+	double x; double y;
+};
+Item item[20]; Item sources[5]; Item dests[5]; Item source;Item sitem;Item dest1;
+void input(); void sourcecontd(Item); void movestraight(); void conditions(Item); void checkidir(Item);
+
+void input()
+{
+    char dummy;
+	for (int i = 0; i < noi; i++)
+	{
+	    cin >> item[i].name1;
+		if (item[i].name1 == "dest" || item[i].name1 == "block")
+		{
+     		cin >> item[i].x>>dummy>>item[i].y;
+			item[i].name2="null";
+			count++;
+		}
+		else
+        {
+            cin >> item[i].name2; cin>>item[i].x;cin >>dummy;cin>> item[i].y;
+            count++;
+        }
+    }
+	int j = 0,c=0;
+	for (int i = 0; i < noi; i++)
+	{
+	    if (item[i].name1 == "source")
+		{
+		    sources[j]=item[i];
+		    j++;
+        }
+		nos=j;
+    }
+
+    for (int i=0;i<noi;i++)
+    {
+        if(item[i].name1=="dest")
+        {
+            dests[c]=item[i];
+            c++;
+        }
+        nod=c;
+    }
+}
+
+void sourcecontd(Item source)
+{
+    int m=0;
+    if(source.x<ssm && source.y<ssm && source.x>=0 && source.y>=0 && reach==0)
+    {
+        for(int i=0;i<noi;i++)
+        {
+            if(reach==0)
+            {
+                if(item[i].name1!="source")
+                {
+                     if(source.x==item[i].x && source.y==item[i].y)
+                      {
+                        sitem=item[i];
+                        conditions(sitem);
+                        i=i+20;
+                        m=10;
+                     }
+                    /* else if(source.x!=item[i].x && source.y==item[i].y)
+                        {
+                //            cout<<"\nItem not matched \n";
+                        }
+                        */
+                }
+            else if (item[i].name1=="source")
+            {
+                if(sources[t].name2==item[i].name2 && sources[t].x==item[i].x && sources[t].y==item[i].y)
+                {
+                    m=0;
+                }
+                else if(item[i].x==source.x && item[i].y==source.y)
+                    {
+
+                        m=10; reach=2;
+                     }
+                }
+            }
+        }
+        if (m==0)
+         {
+           movestraight();
+         }
+   }
+}
+
+void movestraight()
+{
+    if(source.x<ssm && source.y<ssm && source.x>=0 && source.y>=0 && reach==0)
+   {
+       if(dir==1)
+       {
+         source.y++;
+       }
+       else if (dir==2)
+       {
+         source.y--;
+       }
+       else if(dir==3)
+       {
+         source.x--;
+       }
+       else if(dir==4)
+       {
+         source.x++;
+       }
+
+    sourcecontd(source);
+   }
+}
+
+void conditions (Item sitem)
+{
+    if(sitem.name1=="single")
+    {
+      if(sitem.name2=="nw")
+      {
+          if(dir==1)
+          {
+            reach=2;
+          }
+          else if(dir==2)
+          {
+              dir=3;
+              movestraight();
+          }
+          else if(dir==3)
+          {
+             reach=2;
+          }
+          else if(dir==4)
+          {
+              dir=1;
+              movestraight();
+          }
+      }
+      else if(sitem.name2=="ne")
+      {
+          if(dir==1)
+          {
+              reach=2;
+          }
+          else if(dir==2)
+          {
+              dir=4;
+              movestraight();
+          }
+          else if(dir==3)
+          {
+              dir=1;
+              movestraight();
+          }
+          else if(dir==4)
+          {
+              reach=2;
+          }
+      }
+      else if(sitem.name2=="sw")
+      {
+       if(dir==1)
+          {
+            dir=3;
+            movestraight();
+          }
+          else if(dir==2)
+          {
+            reach=2;
+          }
+          else if(dir==3)
+          {
+            reach=2;
+          }
+          else if(dir==4)
+          {
+            dir=2;
+            movestraight();
+          }
+      }
+      else if(sitem.name2=="se")
+      {
+          if(dir==1)
+          {
+              dir=4;
+              movestraight();
+          }
+          else if(dir==2)
+          {
+              reach=2;
+          }
+          else if(dir==3)
+          {
+              dir=2;
+              movestraight();
+
+          }
+          else if(dir==4)
+          {
+              reach=2;
+          }
+      }
+  }
+  else if(sitem.name1=="double")
+  {
+      if(sitem.name2=="ne" || sitem.name2=="sw")
+      {
+          if(dir==1)
+          {
+              dir=3;
+              movestraight();
+          }
+          else if(dir==2)
+          {
+              dir=4;
+              movestraight();
+          }
+          else if(dir==3)
+          {
+              dir=1;
+              movestraight();
+          }
+          else if(dir==4)
+          {
+              dir=2;
+              movestraight();
+          }
+      }
+      else if(sitem.name2=="nw"|| sitem.name2=="ne")
+      {
+          if(dir==1)
+          {
+              dir=4;
+              movestraight();
+          }
+          else if(dir==2)
+          {
+              dir=3;
+              movestraight();
+          }
+          else if(dir==3)
+          {
+              dir=2;
+              movestraight();
+          }
+          else if(dir==4)
+          {
+              dir=1;
+              movestraight();
+          }
+      }
+  }
+  else if(sitem.name1=="dest")
+  {
+      dest1=sitem;
+      reach=1;
+  }
+  else if(sitem.name1=="block")
+  {
+      reach=2;
+  }
+}
+
+void checkidir(Item source)
+{
+    if(source.name2=="north")
+    {
+        dir=1;
+        movestraight();
+    }
+    else if (source.name2=="south")
+        {
+            dir=2;
+            movestraight();
+         }
+    else if(source.name2=="west")
+        {
+            dir=3;
+            movestraight();
+        }
+    else if(source.name2=="east")
+        {
+            dir=4;
+            movestraight();
+        }
+}
+
+int main()
+{
+    cin >> ssm;
+	cin >> noi;
+	input();
+	if(ssm>=2 && nos <=5 && nod<=5 && count<=20)
+    {
+        for (int k=0;k<nos;k++)
+    {
+       t=k;
+       source=sources[k];
+       reach=0;
+       checkidir(source);
+       sourcecontd(source);
+       if(reach==2 || reach==0)
+       {
+           cout<<k+1<<"-X\n";
+       }
+       else if(reach==1)
+       {
+           for(int i=0;i<nod;i++)
+           {
+               if(dests[i].x==dest1.x && dests[i].y==dest1.y)
+               {
+                 cout<<k+1<<"-"<<i+1<<endl;
+               }
+           }
+       }
+    }
+    }
+	return 0;
+}
+
